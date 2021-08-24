@@ -169,8 +169,10 @@ namespace CSharpDocCommentSortUtility
         {
             var summaryLines = new List<string>();
             var remarksLines = new List<string>();
+            var typeParamLines = new List<string>();
             var argumentLines = new List<string>();
             var returnLines = new List<string>();
+            var exceptionLines = new List<string>();
 
             var currentSection = summaryLines;
 
@@ -207,6 +209,12 @@ namespace CSharpDocCommentSortUtility
                             currentSection = summaryLines;
                             break;
 
+                        case "typeparam":
+                        case "typeparamref":
+                            typeParamLines.Add(dataLine);
+                            currentSection = typeParamLines;
+                            break;
+
                         case "param":
                         case "paramref":
                             argumentLines.Add(dataLine);
@@ -236,6 +244,11 @@ namespace CSharpDocCommentSortUtility
                                 "returns", "return",
                                 returnLines, ref dataLine, ref currentSection);
 
+                            break;
+
+                        case "exception":
+                            exceptionLines.Add(dataLine);
+                            currentSection = exceptionLines;
                             break;
 
                         default:
@@ -298,8 +311,10 @@ namespace CSharpDocCommentSortUtility
 
             var updatedComments = summaryLines.ToList();
             updatedComments.AddRange(remarksLines);
+            updatedComments.AddRange(typeParamLines);
             updatedComments.AddRange(argumentLines);
             updatedComments.AddRange(returnLines);
+            updatedComments.AddRange(exceptionLines);
 
             if (resharperDisableLine.Length > 0)
             {
