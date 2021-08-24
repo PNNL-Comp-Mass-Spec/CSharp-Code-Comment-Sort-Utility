@@ -44,6 +44,11 @@ namespace CSharpDocCommentSortUtility
             HelpText = "If true, remove empty returns blocks, i.e. <returns></returns>")]
         public bool RemoveEmptyReturns { get; set; }
 
+        [Option("RemoveEmptyValueTags", "REV",
+            HelpShowsDefault = false,
+            HelpText = "If true, remove empty value blocks, i.e. <value></value>")]
+        public bool RemoveEmptyValueTags { get; set; }
+
         [Option("RenameInvalidElements", "FixInvalid", "RenameInvalid",
             HelpShowsDefault = true,
             HelpText = "If true, rename invalid elements, changing from <return></return> to <returns></returns>, " +
@@ -117,8 +122,9 @@ namespace CSharpDocCommentSortUtility
                 }
             }
 
-            Console.WriteLine(" {0,-29} {1}", "Remove empty remarks:", BoolToEnabledDisabled(RemoveEmptyRemarks || RemoveEmptyBlocks));
-            Console.WriteLine(" {0,-29} {1}", "Remove empty returns:", BoolToEnabledDisabled(RemoveEmptyReturns || RemoveEmptyBlocks));
+            Console.WriteLine(" {0,-29} {1}", "Remove empty remarks:", BoolToEnabledDisabled(RemoveEmptyBlocks || RemoveEmptyRemarks));
+            Console.WriteLine(" {0,-29} {1}", "Remove empty returns:", BoolToEnabledDisabled(RemoveEmptyBlocks || RemoveEmptyReturns));
+            Console.WriteLine(" {0,-29} {1}", "Remove empty value tags:", BoolToEnabledDisabled(RemoveEmptyBlocks || RemoveEmptyValueTags));
 
             Console.WriteLine(" {0,-29} {1}", "Rename invalid elements:", BoolToEnabledDisabled(RenameInvalidElements));
 

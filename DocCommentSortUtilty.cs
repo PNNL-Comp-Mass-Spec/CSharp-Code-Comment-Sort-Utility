@@ -224,6 +224,14 @@ namespace CSharpDocCommentSortUtility
                             currentSection = argumentLines;
                             break;
 
+                        case "value":
+                            HandleElement(
+                                runtimeData, elementName,
+                                "value", string.Empty,
+                                argumentLines, ref dataLine, ref currentSection);
+
+                            break;
+
                         case "example":
                         case "inheritdoc":
                         case "para":

@@ -29,7 +29,7 @@ The C# Code Comment Sort Utility is a console application, and must be run from 
 ```
 CSharpDocCommentSortUtility.exe 
   InputFilePath [/S]
-  [/Empty:False] [/REM] [/RET]
+  [/Empty:False] [/REM] [/RET] [/REV]
   [/FixInvalid:False]
   [/Write] 
   [/Verbose] [/Quiet]
@@ -51,6 +51,9 @@ When `/Empty:false` has been used, optionally use `/REM` to remove empty remarks
 
 When `/Empty:false` has been used, optionally use `/RET` to remove empty returns blocks
 * i.e. `<returns></returns>`
+
+When `/Empty:false` has been used, optionally use `/REV` to remove empty value blocks
+* i.e. `<value></value>`
 
 By default, invalid remark and return elements are removed
 * i.e. `<return>True if successful, false if an error</return>` is changed to  `<returns>True if successful, false if an error</returns>`
