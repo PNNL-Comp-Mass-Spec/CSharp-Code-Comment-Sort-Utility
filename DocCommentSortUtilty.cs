@@ -46,17 +46,18 @@ namespace CSharpDocCommentSortUtility
                     runtimeData.InvalidElementWarned = true;
                 }
 
-                OnWarningEvent(string.Format(
-                    "Line {0} has <{1}>; it should instead have <{2}>; auto-updating",
-                    runtimeData.CurrentLineNumber, elementNameSynonym, expectedElementName));
+                WarnInvalidElementName(runtimeData.CurrentLineNumber, elementNameSynonym, expectedElementName);
 
-                dataLine = dataLine.Replace(
-                    string.Format("<{0}>", elementNameSynonym),
-                    string.Format("<{0}>", expectedElementName));
+                if (Options.RenameInvalidElements)
+                {
+                    dataLine = dataLine.Replace(
+                        string.Format("<{0}>", elementNameSynonym),
+                        string.Format("<{0}>", expectedElementName));
 
-                dataLine = dataLine.Replace(
-                    string.Format("</{0}>", elementNameSynonym),
-                    string.Format("</{0}>", expectedElementName));
+                    dataLine = dataLine.Replace(
+                        string.Format("</{0}>", elementNameSynonym),
+                        string.Format("</{0}>", expectedElementName));
+                }
             }
 
             if ((Options.RemoveEmptyReturns || Options.RemoveEmptyBlocks) && dataLine.Trim().Equals(emptyComment))
@@ -474,6 +475,16 @@ namespace CSharpDocCommentSortUtility
                 return ProcessFilesWildcard(Options);
 
             return ProcessFile(Options.InputFilePath);
+        }
+
+        private void WarnInvalidElementName(int currentLineNumber, string currentName, string expectedName, bool isClosingTag = false)
+        {
+            OnWarningEvent(string.Format(
+                "Line {0} has <{4}{1}>; it should instead have <{4}{2}>{3}",
+                currentLineNumber, currentName, expectedName,
+                Options.RenameInvalidElements ? "; auto-updating" : "; leaving as-is",
+                isClosingTag ? "/" : string.Empty));
+
         }
     }
 }

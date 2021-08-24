@@ -44,6 +44,12 @@ namespace CSharpDocCommentSortUtility
             HelpText = "If true, remove empty returns blocks, i.e. <returns></returns>")]
         public bool RemoveEmptyReturns { get; set; }
 
+        [Option("RenameInvalidElements", "FixInvalid", "RenameInvalid",
+            HelpShowsDefault = true,
+            HelpText = "If true, rename invalid elements, changing from <return></return> to <returns></returns>, " +
+                       "and from <remark></remark> to <remarks></remarks>")]
+        public bool RenameInvalidElements { get; set; } = true;
+
         [Option("Save", "Update", "Write",
             HelpShowsDefault = false,
             HelpText = "By default, this program previews changes that would be made. Set this to true (or use /Save or /Update) to replace files with updated versions")]
@@ -114,6 +120,8 @@ namespace CSharpDocCommentSortUtility
             Console.WriteLine(" {0,-29} {1}", "Remove empty remarks:", BoolToEnabledDisabled(RemoveEmptyRemarks || RemoveEmptyBlocks));
             Console.WriteLine(" {0,-29} {1}", "Remove empty returns:", BoolToEnabledDisabled(RemoveEmptyReturns || RemoveEmptyBlocks));
 
+            Console.WriteLine(" {0,-29} {1}", "Rename invalid elements:", BoolToEnabledDisabled(RenameInvalidElements));
+
             Console.WriteLine(" {0,-29} {1}", "Quiet mode:", BoolToEnabledDisabled(QuietMode));
             Console.WriteLine(" {0,-29} {1}", "Verbose mode:", BoolToEnabledDisabled(VerboseMode && !QuietMode));
 
@@ -123,8 +131,6 @@ namespace CSharpDocCommentSortUtility
                 Console.WriteLine(" Replacing files with updated versions");
             else
                 Console.WriteLine(" Previewing files that would be processed");
-
-            Console.WriteLine();
         }
         /// <summary>
         /// Validate the options
