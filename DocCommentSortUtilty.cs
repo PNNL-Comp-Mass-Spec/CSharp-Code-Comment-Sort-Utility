@@ -154,6 +154,7 @@ namespace CSharpDocCommentSortUtility
             };
 
             nextLine = null;
+            var finalLine = string.Empty;
 
             while (true)
             {
@@ -216,6 +217,11 @@ namespace CSharpDocCommentSortUtility
                     break;
                 }
 
+                if (!string.IsNullOrWhiteSpace(dataLine))
+                {
+                    finalLine = dataLine;
+                }
+
                 if (reader.EndOfStream)
                     break;
 
@@ -225,12 +231,29 @@ namespace CSharpDocCommentSortUtility
                 originalComments.Add(dataLine ?? string.Empty);
             }
 
+            string resharperDisableLine;
+
+            if (finalLine.TrimStart().StartsWith("// ReSharper disable once Unused", StringComparison.OrdinalIgnoreCase) &&
+                currentSection.Count > 0 &&
+                currentSection[currentSection.Count - 1].Equals(finalLine))
+            {
+                currentSection.RemoveAt(currentSection.Count - 1);
+                resharperDisableLine = finalLine;
+            }
+            else
+            {
+                resharperDisableLine = string.Empty;
+            }
+
             var updatedComments = summaryLines.ToList();
             updatedComments.AddRange(remarksLines);
             updatedComments.AddRange(argumentLines);
             updatedComments.AddRange(returnLines);
 
+            if (resharperDisableLine.Length > 0)
             {
+                updatedComments.Add(resharperDisableLine);
+            }
 
             var commentBlockUpdated = !ListsMatch(originalComments, updatedComments);
 
