@@ -154,8 +154,8 @@ namespace CSharpDocCommentSortUtility
             {
                 if (options.UpdateFiles && !Options.QuietMode)
                 {
-                    ConsoleMsgUtils.ShowDebug("Processing " + PathUtils.CompactPathString(fileToProcess.FullName, 70));
-                    Console.WriteLine();
+                    OnDebugEvent("Processing " + PathUtils.CompactPathString(fileToProcess.FullName, 70));
+                    OnStatusEvent(string.Empty);
                 }
 
                 var successOneFile = ProcessFile(fileToProcess.FullName, processingMultipleFiles);
@@ -167,12 +167,12 @@ namespace CSharpDocCommentSortUtility
                 }
 
                 failureCount++;
-                ConsoleMsgUtils.ShowWarning("Error processing " + fileToProcess.Name);
+                OnWarningEvent("Error processing " + fileToProcess.Name);
             }
 
             if (successCount == 0 && failureCount == 0)
             {
-                ConsoleMsgUtils.ShowWarning("No files were found with file spec " + options.InputFilePath);
+                OnWarningEvent("No files were found with file spec " + options.InputFilePath);
                 return false;
             }
 
@@ -373,7 +373,7 @@ namespace CSharpDocCommentSortUtility
             if (!Options.VerboseMode)
                 return true;
 
-            Console.WriteLine();
+            OnStatusEvent(string.Empty);
             OnStatusEvent(string.Format("Line {0}:", runtimeData.CommentBlockStartLineNumber));
 
             foreach (var item in updatedComments)
@@ -390,7 +390,7 @@ namespace CSharpDocCommentSortUtility
             {
                 if (processingMultipleFiles && !Options.QuietMode)
                 {
-                    Console.WriteLine();
+                    OnStatusEvent(string.Empty);
                     OnStatusEvent("Processing " + inputFile.FullName);
                 }
 
@@ -438,7 +438,7 @@ namespace CSharpDocCommentSortUtility
 
                 if (sectionsUpdated > 0)
                 {
-                    Console.WriteLine();
+                    OnStatusEvent(string.Empty);
                 }
 
                 if (!Options.UpdateFiles)
