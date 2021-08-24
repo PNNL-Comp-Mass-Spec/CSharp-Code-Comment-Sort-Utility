@@ -28,7 +28,7 @@ The C# Code Comment Sort Utility is a console application, and must be run from 
 
 ```
 CSharpDocCommentSortUtility.exe 
-  InputFilePath [/S]
+  /I:InputFilePath [/S]
   [/Empty:False] [/REM] [/RET] [/REV]
   [/FixInvalid:False]
   [/Write] 
@@ -37,8 +37,15 @@ CSharpDocCommentSortUtility.exe
 
 InputFilePath is a path to the C# source code file to process
 * Wildcards are also supported, for example *.cs
+* On Windows, `/I` is optional, for example:
+  * `CSharpDocCommentSortUtility.exe *.cs`
+  * `CSharpDocCommentSortUtility.exe Program\*.cs /S`
+* On Linux, use of `/I` or `-I` is required; examples: 
+  * `mono CSharpDocCommentSortUtility.exe /I:*.cs` 
+  * `mono CSharpDocCommentSortUtility.exe /I:"*.cs"` 
+  * `mono CSharpDocCommentSortUtility.exe -I:"*.cs" -S`
 
-Use `/S` or `/Recurse` to find matching files in the current directory and subdirectories
+Use `/S` or `-S` or `--S`  or `/Recurse` to find matching files in the current directory and subdirectories
 * Useful when using a wildcard to find cs files
 
 Empty remarks blocks and empty returns blocks are auto-removed
