@@ -33,8 +33,12 @@ namespace CSharpDocCommentSortUtility
                                              "Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/"
             };
 
-            cmdLineParser.UsageExamples.Add(exeName + " CodeFile.cs /Preview");
-            cmdLineParser.UsageExamples.Add(exeName + " *.cs");
+            cmdLineParser.UsageExamples.Add(exeName + " CodeFile.cs");
+            cmdLineParser.UsageExamples.Add(exeName + " CodeFile.cs /write");
+            cmdLineParser.UsageExamples.Add(exeName + " *.cs /s");
+            cmdLineParser.UsageExamples.Add(exeName + " *.cs /s /quiet");
+            cmdLineParser.UsageExamples.Add(exeName + " *.cs /s /quiet /verbose:false");
+            cmdLineParser.UsageExamples.Add(exeName + @" /I:..\Program\*.cs /s /quiet /write");
 
             // The default argument name for parameter files is /ParamFile or -ParamFile
             // Also allow /Conf or /P
