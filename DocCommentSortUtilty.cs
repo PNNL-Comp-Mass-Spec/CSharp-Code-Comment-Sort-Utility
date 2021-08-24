@@ -77,19 +77,16 @@ namespace CSharpDocCommentSortUtility
             if (!dataLine.Trim().Equals(emptyComment))
                 return false;
 
-            if ((elementName.Equals("remarks") || elementName.Equals("remark")) &&
-                (Options.RemoveEmptyBlocks || Options.RemoveEmptyRemarks))
-                return true;
+            switch (elementName)
+            {
+                case "remarks" or "remark" when (Options.RemoveEmptyBlocks || Options.RemoveEmptyRemarks):
+                case "returns" or "return" when (Options.RemoveEmptyBlocks || Options.RemoveEmptyReturns):
+                case "value" when (Options.RemoveEmptyBlocks || Options.RemoveEmptyValueTags):
+                    return true;
 
-            if ((elementName.Equals("returns") || elementName.Equals("return")) &&
-                (Options.RemoveEmptyBlocks || Options.RemoveEmptyReturns))
-                return true;
-
-            if (elementName.Equals("value") &&
-                (Options.RemoveEmptyBlocks || Options.RemoveEmptyValueTags))
-                return true;
-
-            return false;
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
