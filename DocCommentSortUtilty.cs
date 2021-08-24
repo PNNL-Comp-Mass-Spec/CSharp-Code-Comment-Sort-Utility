@@ -12,9 +12,11 @@ namespace CSharpDocCommentSortUtility
     {
         // Ignore Spelling: inheritdoc, paramref, typeparam, typeparamref
 
+        private readonly Regex mCommentMatcher = new("^[ \t]*//[^/]", RegexOptions.Compiled);
+
         private readonly Regex mElementMatcher = new("^[ \t]*///[ \t]*<(?<ElementName>[^ />]+)", RegexOptions.Compiled);
 
-        private readonly Regex mCommentMatcher = new("^[ \t]*//[^/]", RegexOptions.Compiled);
+        private readonly Regex mInvalidClosingElementMatcher = new("^[ \t]*///.+</(?<ElementName>remark|return)>", RegexOptions.Compiled);
 
         public SortUtilityOptions Options { get; set; }
 
@@ -267,6 +269,21 @@ namespace CSharpDocCommentSortUtility
                 }
                 else if (dataLine.TrimStart().StartsWith("///"))
                 {
+                    var invalidClosingElementMatch = mInvalidClosingElementMatcher.Match(dataLine);
+                    if (invalidClosingElementMatch.Success)
+                    {
+                        var currentName = invalidClosingElementMatch.Groups["ElementName"].Value;
+
+                        WarnInvalidElementName(runtimeData.CurrentLineNumber, currentName, currentName + "s", true);
+
+                        if (Options.RenameInvalidElements)
+                        {
+                            dataLine = dataLine.Replace(
+                                string.Format("</{0}>", currentName),
+                                string.Format("</{0}s>", currentName));
+                        }
+                    }
+
                     currentSection.Add(dataLine);
                 }
                 else
