@@ -136,7 +136,7 @@ namespace CSharpDocCommentSortUtility
             if (UpdateFiles)
                 Console.WriteLine(" Replacing files with updated versions");
             else
-                Console.WriteLine(" Previewing files that would be processed");
+                Console.WriteLine(" Previewing changes that would be made");
         }
         /// <summary>
         /// Validate the options

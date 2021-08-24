@@ -114,10 +114,13 @@ namespace CSharpDocCommentSortUtility
         /// Sort documentation comments in the given C# source code file
         /// </summary>
         /// <param name="inputFilePath"></param>
+        /// <param name="sectionsUpdated">Output: number of sections that were updated (or would be updated)</param>
         /// <param name="processingMultipleFiles"></param>
         /// <returns>True if success, false if an error</returns>
-        public bool ProcessFile(string inputFilePath, bool processingMultipleFiles = false)
+        public bool ProcessFile(string inputFilePath, out int sectionsUpdated, bool processingMultipleFiles = false)
         {
+            sectionsUpdated = 0;
+
             try
             {
                 var inputFile = new FileInfo(inputFilePath);
@@ -127,7 +130,7 @@ namespace CSharpDocCommentSortUtility
                     return false;
                 }
 
-                return SortDocumentationComments(inputFile, processingMultipleFiles);
+                return SortDocumentationComments(inputFile, out sectionsUpdated, processingMultipleFiles);
             }
             catch (Exception ex)
             {
@@ -149,6 +152,7 @@ namespace CSharpDocCommentSortUtility
 
             var successCount = 0;
             var failureCount = 0;
+            var updatedFiles = 0;
 
             foreach (var fileToProcess in filesToProcess)
             {
@@ -158,7 +162,10 @@ namespace CSharpDocCommentSortUtility
                     OnStatusEvent(string.Empty);
                 }
 
-                var successOneFile = ProcessFile(fileToProcess.FullName, processingMultipleFiles);
+                var successOneFile = ProcessFile(fileToProcess.FullName, out var sectionsUpdated, processingMultipleFiles);
+
+                if (sectionsUpdated > 0)
+                    updatedFiles++;
 
                 if (successOneFile)
                 {
@@ -174,6 +181,27 @@ namespace CSharpDocCommentSortUtility
             {
                 OnWarningEvent("No files were found with file spec " + options.InputFilePath);
                 return false;
+            }
+
+            var fileCount = successCount + failureCount;
+
+            if (fileCount <= 1)
+            {
+                return failureCount == 0;
+            }
+
+            OnStatusEvent(string.Empty);
+
+            if (updatedFiles == 0)
+            {
+                OnStatusEvent(string.Format("All {0} files are already up-to-date", fileCount));
+            }
+            else
+            {
+                OnStatusEvent(string.Format("{0} {1} / {2} files",
+                    options.UpdateFiles ? "Updated" : "Would update",
+                    updatedFiles,
+                    fileCount));
             }
 
             return failureCount == 0;
@@ -384,8 +412,10 @@ namespace CSharpDocCommentSortUtility
             return true;
         }
 
-        private bool SortDocumentationComments(FileInfo inputFile, bool processingMultipleFiles = false)
+        private bool SortDocumentationComments(FileInfo inputFile, out int sectionsUpdated, bool processingMultipleFiles = false)
         {
+            sectionsUpdated = 0;
+
             try
             {
                 if (processingMultipleFiles && !Options.QuietMode)
@@ -397,8 +427,6 @@ namespace CSharpDocCommentSortUtility
                 var outputFilePath = inputFile.FullName + "_sorted.tmp";
 
                 var outputFile = new FileInfo(outputFilePath);
-
-                var sectionsUpdated = 0;
 
                 var fileContents = new List<string>();
 
@@ -515,7 +543,7 @@ namespace CSharpDocCommentSortUtility
             if (Options.PathHasWildcard(Options.InputFilePath))
                 return ProcessFilesWildcard(Options);
 
-            return ProcessFile(Options.InputFilePath);
+            return ProcessFile(Options.InputFilePath, out _);
         }
 
         private void WarnInvalidElementName(int currentLineNumber, string currentName, string expectedName, bool isClosingTag = false)

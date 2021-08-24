@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Readability", "RCS1123:Add parentheses when necessary.", Justification = "Parenthese not needed", Scope = "member", Target = "~M:CSharpDocCommentSortUtility.DocCommentSortUtility.SortDocumentationComments(System.IO.FileInfo,System.Boolean)~System.Boolean")]
+[assembly: SuppressMessage("Readability", "RCS1123:Add parentheses when necessary.", Justification = "Parenthese not needed", Scope = "member", Target = "~M:CSharpDocCommentSortUtility.DocCommentSortUtility.SortDocumentationComments(System.IO.FileInfo,System.Int32@,System.Boolean)~System.Boolean")]
