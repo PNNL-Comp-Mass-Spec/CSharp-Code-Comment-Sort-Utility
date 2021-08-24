@@ -553,7 +553,6 @@ namespace CSharpDocCommentSortUtility
                 currentLineNumber, currentName, expectedName,
                 Options.RenameInvalidElements ? "; auto-updating" : "; leaving as-is",
                 isClosingTag ? "/" : string.Empty));
-
         }
     }
 }

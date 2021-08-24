@@ -31,7 +31,7 @@ namespace CSharpDocCommentSortUtility
         [Option("RemoveEmpty", "Empty",
             HelpShowsDefault = true,
             HelpText = "If true, remove empty remarks blocks and empty returns blocks, i.e. <remarks></remarks> and <returns></returns>\n" +
-                       "If this is enabled, RemoveEmptyRemarks and RemoveEmptyReturns are implicitly enabled")]
+                       "If this is enabled, RemoveEmptyRemarks, RemoveEmptyReturns, and RemoveEmptyValueTags are implicitly enabled.")]
         public bool RemoveEmptyBlocks { get; set; } = true;
 
         [Option("RemoveEmptyRemarks", "REM",
@@ -57,7 +57,8 @@ namespace CSharpDocCommentSortUtility
 
         [Option("Save", "Update", "Write",
             HelpShowsDefault = false,
-            HelpText = "By default, this program previews changes that would be made. Set this to true (or use /Save or /Update) to replace files with updated versions")]
+            HelpText = "By default, this program previews changes that would be made. " +
+                       "Set this to true (or use /Save or /Update) to replace files with updated versions.")]
         public bool UpdateFiles { get; set; }
 
         [Option("Verbose",
@@ -67,8 +68,7 @@ namespace CSharpDocCommentSortUtility
 
         [Option("Quiet", "Q",
             HelpShowsDefault = false,
-            HelpText = "If true, only show messages if a file is updated (or would be updated)\n" +
-                       "If this is enabled, VerboseMode is ignored ")]
+            HelpText = "When true, show fewer messages at the console")]
         public bool QuietMode { get; set; }
 
         /// <summary>
