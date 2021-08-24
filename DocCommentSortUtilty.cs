@@ -331,7 +331,7 @@ namespace CSharpDocCommentSortUtility
 
                 if (!Options.UpdateFiles)
                 {
-                    if (sectionsUpdated > 0 || !Options.QuietMode)
+                    if (sectionsUpdated > 0 || !Options.QuietMode && Options.VerboseMode)
                     {
                         OnStatusEvent(string.Format("  Would update {0} section{1} in file {2}",
                             sectionsUpdated,
