@@ -1,7 +1,8 @@
 # CSharp Code Comment Sort Utility
 
 This program sorts documentation comment blocks in C# source code files.
-Updated files will have comments in the order Summary, Remarks, Parameters, and Returns.
+Updated files will have comments in the order Summary, Remarks, 
+Parameters, Returns, and Exceptions.
 
 For example:
 
@@ -12,9 +13,11 @@ For example:
         /// <remarks>
         /// Additional omments
         /// </remarks>
+        /// <typeparam name="T">File format type</typeparam>
         /// <param name="inputFilePath">Input file</param>
         /// <param name="outputFilePath">Output file</param>
         /// <returns>True if successful, false if an error</returns>
+        /// <exception cref="NotImplementedException"></exception>
 ```
 
 Output files will have UTF-8 encoding, with a byte order mark.
@@ -25,8 +28,9 @@ The C# Code Comment Sort Utility is a console application, and must be run from 
 
 ```
 CSharpDocCommentSortUtility.exe 
-  InputFilePath [/S] 
-  [/RemoveEmpty] [/REM] [/RET] 
+  InputFilePath [/S]
+  [/Empty:False] [/REM] [/RET]
+  [/FixInvalid:False]
   [/Write] 
   [/Verbose] [/Quiet]
 ```
@@ -37,15 +41,20 @@ InputFilePath is a path to the C# source code file to process
 Use `/S` or `/Recurse` to find matching files in the current directory and subdirectories
 * Useful when using a wildcard to find cs files
 
-Use `/Empty` or `/RemoveEmpty` empty remarks blocks and empty returns blocks
+Empty remarks blocks and empty returns blocks are auto-removed
 * i.e. `<remarks></remarks>` and `<returns></returns>`
-* If this is enabled, `/REM` and `/RET` are implicitly enabled
+* When enabled, `/REM` and `/RET` are implicitly enabled
+  * To disable this, use `/Empty:False` or `/RemoveEmpty:False`
 
-Use `/REM` to remove empty remarks blocks
+When `/Empty:false` has been used, optionally use `/REM` to remove empty remarks blocks
 * i.e. `<remarks></remarks>`
 
-Use `/RET` to remove empty returns blocks
+When `/Empty:false` has been used, optionally use `/RET` to remove empty returns blocks
 * i.e. `<returns></returns>`
+
+By default, invalid remark and return elements are removed
+* i.e. `<return>True if successful, false if an error</return>` is changed to  `<returns>True if successful, false if an error</returns>`
+* To disable this, use `/FixInvalid:False` or `/RenameInvalid:False`
 
 By default, this program previews changes that would be made
 * Use `/Save` or `/Write` or `/Update` to replace files with updated versions
@@ -53,9 +62,8 @@ By default, this program previews changes that would be made
 By default, this program shows the comment blocks that would be updated
 * Use `/Verbose:False` to disable this
 
-Use `/Q` or `/Quiet` to show a minimal amount of messages at the console
+Use `/Q` or `/Quiet` to reduce the number of messages shown at the console
 * This is useful if processing a large number of files
-* When `/Q` is enabled, `/Verbose` is ignored
 
 The processing options can be specified in a parameter file using `/ParamFile:Options.conf` or `/Conf:Options.conf`
 * Define options using the format `ArgumentName=Value`
