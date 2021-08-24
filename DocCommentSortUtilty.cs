@@ -38,7 +38,7 @@ namespace CSharpDocCommentSortUtility
             ref string dataLine,
             ref List<string> currentSection)
         {
-            if (elementName.Equals(elementNameSynonym))
+            if (!string.IsNullOrWhiteSpace(elementNameSynonym) && elementName.Equals(elementNameSynonym))
             {
                 if (!runtimeData.InvalidElementWarned)
                 {
