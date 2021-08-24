@@ -126,18 +126,9 @@ namespace CSharpDocCommentSortUtility
         /// <summary>
         /// Process a documentation comment block
         /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="firstLine"></param>
-        /// <param name="inputFileStartLine"></param>
-        /// <param name="fileContents"></param>
-        /// <param name="nextLine"></param>
+        /// <param name="runtimeData"></param>
         /// <returns>True if the documentation comment block was updated, otherwise false</returns>
-        private bool ProcessDocumentationBlock(
-            StreamReader reader,
-            string firstLine,
-            int inputFileStartLine,
-            List<string> fileContents,
-            out string nextLine)
+        private bool ProcessDocumentationBlock(RuntimeData runtimeData)
         {
             var summaryLines = new List<string>();
             var remarksLines = new List<string>();
@@ -146,14 +137,14 @@ namespace CSharpDocCommentSortUtility
 
             var currentSection = summaryLines;
 
-            var dataLine = firstLine;
+            var dataLine = runtimeData.CommentBlockFirstLine;
 
             var originalComments = new List<string>
             {
                 dataLine ?? string.Empty
             };
 
-            nextLine = null;
+            runtimeData.NextLine = null;
             var finalLine = string.Empty;
 
             while (true)
@@ -207,7 +198,7 @@ namespace CSharpDocCommentSortUtility
                 else
                 {
                     // No longer in the documentation comment block
-                    nextLine = dataLine;
+                    runtimeData.NextLine = dataLine;
 
                     if (originalComments.Count > 0)
                         originalComments.RemoveAt(originalComments.Count - 1);
@@ -222,11 +213,11 @@ namespace CSharpDocCommentSortUtility
                     finalLine = dataLine;
                 }
 
-                if (reader.EndOfStream)
+                if (runtimeData.Reader.EndOfStream)
                     break;
 
-                dataLine = reader.ReadLine();
-                mCurrentLineNumber++;
+                dataLine = runtimeData.Reader.ReadLine();
+                runtimeData.CurrentLineNumber++;
 
                 originalComments.Add(dataLine ?? string.Empty);
             }
@@ -257,7 +248,7 @@ namespace CSharpDocCommentSortUtility
 
             var commentBlockUpdated = !ListsMatch(originalComments, updatedComments);
 
-            fileContents.AddRange(updatedComments);
+            runtimeData.FileContents.AddRange(updatedComments);
 
             if (!commentBlockUpdated)
                 return false;
@@ -266,7 +257,7 @@ namespace CSharpDocCommentSortUtility
                 return true;
 
             Console.WriteLine();
-            OnStatusEvent(string.Format("Line {0}:", inputFileStartLine));
+            OnStatusEvent(string.Format("Line {0}:", runtimeData.CommentBlockStartLineNumber));
 
             foreach (var item in updatedComments)
             {
@@ -291,16 +282,17 @@ namespace CSharpDocCommentSortUtility
                 var outputFile = new FileInfo(outputFilePath);
 
                 var sectionsUpdated = 0;
-                mCurrentLineNumber = 0;
 
                 var fileContents = new List<string>();
 
                 using (var reader = new StreamReader(new FileStream(inputFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
+                    var runtimeData = new RuntimeData(inputFile.FullName, reader, fileContents);
+
                     while (!reader.EndOfStream)
                     {
                         var dataLine = reader.ReadLine();
-                        mCurrentLineNumber++;
+                        runtimeData.CurrentLineNumber++;
 
                         if (string.IsNullOrEmpty(dataLine))
                         {
@@ -314,13 +306,16 @@ namespace CSharpDocCommentSortUtility
                             continue;
                         }
 
-                        var sectionUpdated = ProcessDocumentationBlock(reader, dataLine, mCurrentLineNumber, fileContents, out var nextLine);
+                        runtimeData.CommentBlockFirstLine = dataLine;
+                        runtimeData.CommentBlockStartLineNumber = runtimeData.CurrentLineNumber;
+
+                        var sectionUpdated = ProcessDocumentationBlock(runtimeData);
 
                         if (sectionUpdated)
                             sectionsUpdated++;
 
-                        if (nextLine != null)
-                            fileContents.Add(nextLine);
+                        if (runtimeData.NextLine != null)
+                            fileContents.Add(runtimeData.NextLine);
                     }
                 }
 

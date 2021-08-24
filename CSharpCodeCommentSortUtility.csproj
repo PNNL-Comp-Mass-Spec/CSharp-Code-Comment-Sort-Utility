@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="DocCommentSortUtilty.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="RuntimeData.cs" />
     <Compile Include="SortUtilityOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
