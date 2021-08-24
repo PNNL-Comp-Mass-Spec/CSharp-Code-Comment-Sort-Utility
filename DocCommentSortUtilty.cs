@@ -10,17 +10,11 @@ namespace CSharpDocCommentSortUtility
 {
     internal class DocCommentSortUtility : EventNotifier
     {
-        private readonly Regex mArgumentsMatcher = new("^[ \t]*///[ \t]*<param ", RegexOptions.Compiled);
+        // Ignore Spelling: inheritdoc, paramref, typeparam, typeparamref
+
+        private readonly Regex mElementMatcher = new("^[ \t]*///[ \t]*<(?<ElementName>[^ />]+)", RegexOptions.Compiled);
 
         private readonly Regex mCommentMatcher = new("^[ \t]*//[^/]", RegexOptions.Compiled);
-
-        private readonly Regex mRemarksMatcher = new("^[ \t]*///[ \t]*<remarks>", RegexOptions.Compiled);
-
-        private readonly Regex mReturnsMatcher = new("^[ \t]*///[ \t]*<returns>", RegexOptions.Compiled);
-
-        private readonly Regex mSummaryMatcher = new("^[ \t]*///[ \t]*<summary>", RegexOptions.Compiled);
-
-        private int mCurrentLineNumber;
 
         public SortUtilityOptions Options { get; set; }
 
@@ -31,6 +25,49 @@ namespace CSharpDocCommentSortUtility
         public DocCommentSortUtility(SortUtilityOptions options)
         {
             Options = options;
+        }
+
+        private void HandleElement(
+            RuntimeData runtimeData,
+            string elementName,
+            string expectedElementName,
+            string elementNameSynonym,
+            List<string> targetSection,
+            ref string dataLine,
+            ref List<string> currentSection)
+        {
+            var emptyComment = string.Format("/// <{0}></{0}>", elementName);
+
+            if (elementName.Equals(elementNameSynonym))
+            {
+                if (!runtimeData.InvalidElementWarned)
+                {
+                    OnWarningEvent("Invalid element in file " + PathUtils.CompactPathString(runtimeData.InputFilePath, 120));
+                    runtimeData.InvalidElementWarned = true;
+                }
+
+                OnWarningEvent(string.Format(
+                    "Line {0} has <{1}>; it should instead have <{2}>; auto-updating",
+                    runtimeData.CurrentLineNumber, elementNameSynonym, expectedElementName));
+
+                dataLine = dataLine.Replace(
+                    string.Format("<{0}>", elementNameSynonym),
+                    string.Format("<{0}>", expectedElementName));
+
+                dataLine = dataLine.Replace(
+                    string.Format("</{0}>", elementNameSynonym),
+                    string.Format("</{0}>", expectedElementName));
+            }
+
+            if ((Options.RemoveEmptyReturns || Options.RemoveEmptyBlocks) && dataLine.Trim().Equals(emptyComment))
+            {
+                // Skip this line
+            }
+            else
+            {
+                targetSection.Add(dataLine);
+                currentSection = targetSection;
+            }
         }
 
         /// <summary>
@@ -149,6 +186,8 @@ namespace CSharpDocCommentSortUtility
 
             while (true)
             {
+                var elementMatch = mElementMatcher.Match(dataLine ?? string.Empty);
+
                 if (string.IsNullOrEmpty(dataLine))
                 {
                     currentSection.Add(string.Empty);
@@ -157,38 +196,59 @@ namespace CSharpDocCommentSortUtility
                 {
                     currentSection.Add(dataLine);
                 }
-                else if (mSummaryMatcher.IsMatch(dataLine))
+                else if (elementMatch.Success)
                 {
-                    summaryLines.Add(dataLine);
-                    currentSection = summaryLines;
-                }
-                else if (mRemarksMatcher.IsMatch(dataLine))
-                {
-                    if ((Options.RemoveEmptyRemarks || Options.RemoveEmptyBlocks) && dataLine.Trim().Equals("/// <remarks></remarks>"))
+                    var elementName = elementMatch.Groups["ElementName"].Value;
+
+                    switch (elementName)
                     {
-                        // Skip this line
-                    }
-                    else
-                    {
-                        remarksLines.Add(dataLine);
-                        currentSection = remarksLines;
-                    }
-                }
-                else if (mArgumentsMatcher.IsMatch(dataLine))
-                {
-                    argumentLines.Add(dataLine);
-                    currentSection = argumentLines;
-                }
-                else if (mReturnsMatcher.IsMatch(dataLine))
-                {
-                    if ((Options.RemoveEmptyReturns || Options.RemoveEmptyBlocks) && dataLine.Trim().Equals("/// <returns></returns>"))
-                    {
-                        // Skip this line
-                    }
-                    else
-                    {
-                        returnLines.Add(dataLine);
-                        currentSection = returnLines;
+                        case "summary":
+                            summaryLines.Add(dataLine);
+                            currentSection = summaryLines;
+                            break;
+
+                        case "param":
+                        case "paramref":
+                            argumentLines.Add(dataLine);
+                            currentSection = argumentLines;
+                            break;
+
+                        case "example":
+                        case "inheritdoc":
+                        case "para":
+                        case "see":
+                            currentSection.Add(dataLine);
+                            break;
+
+                        case "remarks":
+                        case "remark":
+                            HandleElement(
+                                runtimeData, elementName,
+                                "remarks", "remark",
+                                remarksLines, ref dataLine, ref currentSection);
+
+                            break;
+
+                        case "returns":
+                        case "return":
+                            HandleElement(
+                                runtimeData, elementName,
+                                "returns", "return",
+                                returnLines, ref dataLine, ref currentSection);
+
+                            break;
+
+                        default:
+                            if (!runtimeData.UnrecognizedElementWarned)
+                            {
+                                OnWarningEvent("Unrecognized element in file " + PathUtils.CompactPathString(runtimeData.InputFilePath, 120));
+                                runtimeData.UnrecognizedElementWarned = true;
+                            }
+
+                            OnWarningEvent(string.Format("Unrecognized element name on line {0}: {1}", runtimeData.CurrentLineNumber, elementName));
+
+                            currentSection.Add(dataLine);
+                            break;
                     }
                 }
                 else if (dataLine.TrimStart().StartsWith("///"))

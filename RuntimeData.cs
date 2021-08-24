@@ -15,9 +15,13 @@ namespace CSharpDocCommentSortUtility
 
         public string InputFilePath { get; }
 
+        public bool InvalidElementWarned { get; set; }
+
         public string NextLine { get; set; }
 
         public StreamReader Reader { get; }
+
+        public bool UnrecognizedElementWarned { get; set; }
 
         /// <summary>
         /// Constructor
@@ -34,7 +38,9 @@ namespace CSharpDocCommentSortUtility
             CommentBlockStartLineNumber = 0;
             CurrentLineNumber = 0;
             FileContents = fileContents;
+            InvalidElementWarned = false;
             NextLine = null;
+            UnrecognizedElementWarned = false;
         }
     }
 }
