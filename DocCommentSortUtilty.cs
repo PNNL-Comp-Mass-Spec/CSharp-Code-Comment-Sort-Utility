@@ -34,6 +34,27 @@ namespace CSharpDocCommentSortUtility
         }
 
         /// <summary>
+        /// Compare the contents of two lists of strings
+        /// </summary>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns>True if the lists have the same strings, otherwise false</returns>
+        private static bool ListsMatch(IReadOnlyList<string> list1, IReadOnlyList<string> list2)
+        {
+            if (list1.Count != list2.Count)
+                return false;
+
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            for (var i = 0; i < list2.Count; i++)
+            {
+                if (!list1[i].Equals(list2[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Sort documentation comments in the given C# source code file
         /// </summary>
         /// <param name="inputFilePath"></param>
@@ -115,7 +136,7 @@ namespace CSharpDocCommentSortUtility
             StreamReader reader,
             string firstLine,
             int inputFileStartLine,
-            ICollection<string> fileContents,
+            List<string> fileContents,
             out string nextLine)
         {
             var summaryLines = new List<string>();
@@ -209,24 +230,11 @@ namespace CSharpDocCommentSortUtility
             updatedComments.AddRange(argumentLines);
             updatedComments.AddRange(returnLines);
 
-            var commentBlockUpdated = updatedComments.Count != originalComments.Count;
-
-            for (var i = 0; i < updatedComments.Count; i++)
             {
-                fileContents.Add(updatedComments[i]);
 
-                if (commentBlockUpdated)
-                    continue;
+            var commentBlockUpdated = !ListsMatch(originalComments, updatedComments);
 
-                if (i >= originalComments.Count)
-                {
-                    commentBlockUpdated = true;
-                    continue;
-                }
-
-                if (!originalComments[i].Equals(updatedComments[i]))
-                    commentBlockUpdated = true;
-            }
+            fileContents.AddRange(updatedComments);
 
             if (!commentBlockUpdated)
                 return false;
