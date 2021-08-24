@@ -346,7 +346,7 @@ namespace CSharpDocCommentSortUtility
             if (!commentBlockUpdated)
                 return false;
 
-            if (Options.QuietMode || !Options.VerboseMode)
+            if (!Options.VerboseMode)
                 return true;
 
             Console.WriteLine();
@@ -367,7 +367,7 @@ namespace CSharpDocCommentSortUtility
                 if (processingMultipleFiles && !Options.QuietMode)
                 {
                     Console.WriteLine();
-                    OnStatusEvent("Processing  " + inputFile.FullName);
+                    OnStatusEvent("Processing " + inputFile.FullName);
                 }
 
                 var outputFilePath = inputFile.FullName + "_sorted.tmp";
@@ -412,7 +412,7 @@ namespace CSharpDocCommentSortUtility
                     }
                 }
 
-                if (!Options.QuietMode)
+                if (sectionsUpdated > 0)
                 {
                     Console.WriteLine();
                 }
