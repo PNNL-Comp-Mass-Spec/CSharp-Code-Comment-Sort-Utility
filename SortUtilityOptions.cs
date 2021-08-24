@@ -29,10 +29,10 @@ namespace CSharpDocCommentSortUtility
         public bool RecurseDirectories { get; set; }
 
         [Option("RemoveEmpty", "Empty",
-            HelpShowsDefault = false,
+            HelpShowsDefault = true,
             HelpText = "If true, remove empty remarks blocks and empty returns blocks, i.e. <remarks></remarks> and <returns></returns>\n" +
                        "If this is enabled, RemoveEmptyRemarks and RemoveEmptyReturns are implicitly enabled")]
-        public bool RemoveEmptyBlocks { get; set; }
+        public bool RemoveEmptyBlocks { get; set; } = true;
 
         [Option("RemoveEmptyRemarks", "REM",
             HelpShowsDefault = false,
