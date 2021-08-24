@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using PRISM;
 
@@ -124,7 +123,6 @@ namespace CSharpDocCommentSortUtility
                 Console.WriteLine(" Replacing files with updated versions");
             else
                 Console.WriteLine(" Previewing files that would be processed");
-
 
             Console.WriteLine();
         }
