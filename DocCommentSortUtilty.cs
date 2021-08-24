@@ -454,6 +454,7 @@ namespace CSharpDocCommentSortUtility
         /// <returns>True if success, false if an error</returns>
         public bool StartProcessing()
         {
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (Options.PathHasWildcard(Options.InputFilePath))
                 return ProcessFilesWildcard(Options);
 
