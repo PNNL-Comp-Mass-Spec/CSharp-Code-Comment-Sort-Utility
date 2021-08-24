@@ -38,8 +38,6 @@ namespace CSharpDocCommentSortUtility
             ref string dataLine,
             ref List<string> currentSection)
         {
-            var emptyComment = string.Format("/// <{0}></{0}>", elementName);
-
             if (elementName.Equals(elementNameSynonym))
             {
                 if (!runtimeData.InvalidElementWarned)
@@ -62,15 +60,36 @@ namespace CSharpDocCommentSortUtility
                 }
             }
 
-            if ((Options.RemoveEmptyReturns || Options.RemoveEmptyBlocks) && dataLine.Trim().Equals(emptyComment))
+            if (IsEmptyBlockToSkip(elementName, dataLine))
             {
                 // Skip this line
+                return;
             }
-            else
-            {
-                targetSection.Add(dataLine);
-                currentSection = targetSection;
-            }
+
+            targetSection.Add(dataLine);
+            currentSection = targetSection;
+        }
+
+        private bool IsEmptyBlockToSkip(string elementName, string dataLine)
+        {
+            var emptyComment = string.Format("/// <{0}></{0}>", elementName);
+
+            if (!dataLine.Trim().Equals(emptyComment))
+                return false;
+
+            if ((elementName.Equals("remarks") || elementName.Equals("remark")) &&
+                (Options.RemoveEmptyBlocks || Options.RemoveEmptyRemarks))
+                return true;
+
+            if ((elementName.Equals("returns") || elementName.Equals("return")) &&
+                (Options.RemoveEmptyBlocks || Options.RemoveEmptyReturns))
+                return true;
+
+            if (elementName.Equals("value") &&
+                (Options.RemoveEmptyBlocks || Options.RemoveEmptyValueTags))
+                return true;
+
+            return false;
         }
 
         /// <summary>
