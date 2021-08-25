@@ -1,8 +1,9 @@
 # CSharp Code Comment Sort Utility
 
 This program sorts documentation comment blocks in C# source code files.
-Updated files will have comments in the order Summary, Remarks, 
-Parameters, Returns, and Exceptions.
+Updated files will have documentation comments in the order 
+Summary, Remarks, Parameters, Returns, and Exceptions. The program
+also looks for non-standard element names and formatting in documentation comments.
 
 For example:
 
@@ -45,35 +46,41 @@ InputFilePath is a path to the C# source code file to process
   * `mono CSharpDocCommentSortUtility.exe /I:"*.cs"` 
   * `mono CSharpDocCommentSortUtility.exe -I:"*.cs" -S`
 
-Use `/S` or `-S` or `--S`  or `/Recurse` to find matching files in the current directory and subdirectories
+Use `/S` or `-S` or `--S` or `/Recurse` to find matching files in the current directory and subdirectories
 * Useful when using a wildcard to find cs files
 
-Empty remarks blocks and empty returns blocks are auto-removed
-* i.e. `<remarks></remarks>` and `<returns></returns>`
-* When enabled, `/REM` and `/RET` are implicitly enabled
+By default, `/Empty:True` is defined, meaning empty remarks blocks and empty returns blocks are auto-removed
+* Removes: `<remarks></remarks>` and `<returns></returns>`
+* When enabled, `/REM` and `/RET` and `/REV` are implicitly enabled
   * To disable this, use `/Empty:False` or `/RemoveEmpty:False`
 
 When `/Empty:false` has been used, optionally use `/REM` to remove empty remarks blocks
-* i.e. `<remarks></remarks>`
+* Remove: `<remarks></remarks>`
 
 When `/Empty:false` has been used, optionally use `/RET` to remove empty returns blocks
-* i.e. `<returns></returns>`
+* Remove: `<returns></returns>`
 
 When `/Empty:false` has been used, optionally use `/REV` to remove empty value blocks
-* i.e. `<value></value>`
+* Remove: `<value></value>`
 
-By default, invalid remark and return elements are removed
-* i.e. `<return>True if successful, false if an error</return>` is changed to  `<returns>True if successful, false if an error</returns>`
+By default, invalid remark and return elements are renamed
+* Changes `<return>True if successful, false if an error</return>` to `<returns>True if successful, false if an error</returns>`
+* Changes `<remark>Used by the shape class</remark>` to `<remarks>Used by the shape class</remarks>`
+* Additionally, comments that have `/// ///` will be changed to have `///`
 * To disable this, use `/FixInvalid:False` or `/RenameInvalid:False`
 
 By default, this program previews changes that would be made
-* Use `/Save` or `/Write` or `/Update` to replace files with updated versions
+* Use `/Save` or `/Update` or `/Write` to replace files with updated versions
+* The original file will be rename to end with `.bak`
+  * If an existing `.bak` file already exists, the original file will be renamed to `.bak1` or `.bak2`, etc., thus avoiding overwriting existing files
 
 By default, this program shows the comment blocks that would be updated
 * Use `/Verbose:False` to disable this
 
 Use `/Q` or `/Quiet` to reduce the number of messages shown at the console
 * This is useful if processing a large number of files
+* When both `/Q` and `/Verbose:False` are used, status messages will show the files that would be updated (or were updated)
+* When Both `/Q` and `/Verbose:True` are used, updated documentation comment blocks will also be shown
 
 The processing options can be specified in a parameter file using `/ParamFile:Options.conf` or `/Conf:Options.conf`
 * Define options using the format `ArgumentName=Value`
@@ -93,5 +100,5 @@ Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/
 ## License
 
 This program is licensed under the Apache License, Version 2.0; you may not use this 
-file except in compliance with the License.  You may obtain a copy of the 
+file except in compliance with the License. You may obtain a copy of the 
 License at https://opensource.org/licenses/Apache-2.0
