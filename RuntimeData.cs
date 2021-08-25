@@ -15,7 +15,7 @@ namespace CSharpDocCommentSortUtility
 
         public string InputFilePath { get; }
 
-        public bool InvalidElementWarned { get; set; }
+        public bool InvalidFormatWarned { get; set; }
 
         public string NextLine { get; set; }
 
@@ -38,7 +38,7 @@ namespace CSharpDocCommentSortUtility
             CommentBlockStartLineNumber = 0;
             CurrentLineNumber = 0;
             FileContents = fileContents;
-            InvalidElementWarned = false;
+            InvalidFormatWarned = false;
             NextLine = null;
             UnrecognizedElementWarned = false;
         }
