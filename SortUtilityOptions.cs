@@ -11,7 +11,7 @@ namespace CSharpDocCommentSortUtility
         /// <summary>
         /// Program date
         /// </summary>
-        public const string PROGRAM_DATE = "August 24, 2021";
+        public const string PROGRAM_DATE = "August 25, 2021";
 
         /// <summary>
         /// Input file path
@@ -30,8 +30,9 @@ namespace CSharpDocCommentSortUtility
 
         [Option("RemoveEmpty", "Empty",
             HelpShowsDefault = true,
-            HelpText = "If true, remove empty remarks blocks and empty returns blocks, i.e. <remarks></remarks> and <returns></returns>\n" +
-                       "If this is enabled, RemoveEmptyRemarks, RemoveEmptyReturns, and RemoveEmptyValueTags are implicitly enabled.")]
+            HelpText = "If true, remove empty remarks blocks, empty returns blocks, and empty value blocks. " +
+                       "If this is enabled, RemoveEmptyRemarks (/REM), RemoveEmptyReturns (/RET), " +
+                       "and RemoveEmptyValueTags (/REV) are implicitly enabled.")]
         public bool RemoveEmptyBlocks { get; set; } = true;
 
         [Option("RemoveEmptyRemarks", "REM",
@@ -52,7 +53,8 @@ namespace CSharpDocCommentSortUtility
         [Option("RenameInvalidElements", "FixInvalid", "RenameInvalid",
             HelpShowsDefault = true,
             HelpText = "If true, rename invalid elements, changing from <return></return> to <returns></returns>, " +
-                       "and from <remark></remark> to <remarks></remarks>")]
+                       "and from <remark></remark> to <remarks></remarks>. " +
+                       "Also updates occurrences of '/// ///' to be '///'")]
         public bool RenameInvalidElements { get; set; } = true;
 
         [Option("Save", "Update", "Write",

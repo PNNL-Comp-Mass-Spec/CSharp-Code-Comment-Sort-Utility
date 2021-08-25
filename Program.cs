@@ -38,7 +38,7 @@ namespace CSharpDocCommentSortUtility
             cmdLineParser.UsageExamples.Add(exeName + " *.cs /s");
             cmdLineParser.UsageExamples.Add(exeName + " *.cs /s /quiet");
             cmdLineParser.UsageExamples.Add(exeName + " *.cs /s /quiet /verbose:false");
-            cmdLineParser.UsageExamples.Add(exeName + @" /I:..\Program\*.cs /s /quiet /write");
+            cmdLineParser.UsageExamples.Add(exeName + @" /I:..\FileProcessor\*.cs /s /quiet /write");
 
             // The default argument name for parameter files is /ParamFile or -ParamFile
             // Also allow /Conf or /P
@@ -63,10 +63,7 @@ namespace CSharpDocCommentSortUtility
 
                 var success = processor.StartProcessing();
 
-                if (success)
-                    return 0;
-
-                return -1;
+                return success ? 0 : -1;
             }
             catch (Exception ex)
             {
