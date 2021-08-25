@@ -40,13 +40,7 @@ namespace CSharpDocCommentSortUtility
         {
             if (!string.IsNullOrWhiteSpace(elementNameSynonym) && elementName.Equals(elementNameSynonym))
             {
-                if (!runtimeData.InvalidElementWarned)
-                {
-                    OnWarningEvent("Invalid element in file " + PathUtils.CompactPathString(runtimeData.InputFilePath, 120));
-                    runtimeData.InvalidElementWarned = true;
-                }
-
-                WarnInvalidElementName(runtimeData.CurrentLineNumber, elementNameSynonym, expectedElementName);
+                WarnInvalidElementName(runtimeData, elementNameSynonym, expectedElementName);
 
                 if (Options.RenameInvalidElements)
                 {
@@ -326,7 +320,7 @@ namespace CSharpDocCommentSortUtility
                     {
                         var currentName = invalidClosingElementMatch.Groups["ElementName"].Value;
 
-                        WarnInvalidElementName(runtimeData.CurrentLineNumber, currentName, currentName + "s", true);
+                        WarnInvalidElementName(runtimeData, currentName, currentName + "s", true);
 
                         if (Options.RenameInvalidElements)
                         {
@@ -546,13 +540,20 @@ namespace CSharpDocCommentSortUtility
             return ProcessFile(Options.InputFilePath, out _);
         }
 
-        private void WarnInvalidElementName(int currentLineNumber, string currentName, string expectedName, bool isClosingTag = false)
+        private void WarnInvalidElementName(RuntimeData runtimeData, string currentName, string expectedName, bool isClosingTag = false)
         {
+            if (!runtimeData.InvalidFormatWarned)
+            {
+                OnWarningEvent("Invalid element in file " + PathUtils.CompactPathString(runtimeData.InputFilePath, 120));
+                runtimeData.InvalidFormatWarned = true;
+            }
+
             OnWarningEvent(string.Format(
                 "Line {0} has <{4}{1}>; it should instead have <{4}{2}>{3}",
-                currentLineNumber, currentName, expectedName,
-                Options.RenameInvalidElements ? "; auto-updating" : "; leaving as-is",
+                runtimeData.CurrentLineNumber, currentName, expectedName,
+                Options.RenameInvalidElements ? " -- auto-updating" : " -- leaving as-is",
                 isClosingTag ? "/" : string.Empty));
         }
+
     }
 }
