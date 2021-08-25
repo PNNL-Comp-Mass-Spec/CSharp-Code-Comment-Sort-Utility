@@ -229,6 +229,16 @@ namespace CSharpDocCommentSortUtility
 
             while (true)
             {
+                if (dataLine.TrimStart().StartsWith("/// ///"))
+                {
+                    WarnInvalidFormat(runtimeData, dataLine);
+
+                    if (Options.RenameInvalidElements)
+                    {
+                        dataLine = ReplaceFirst(dataLine, "/// ///", "///");
+                    }
+                }
+
                 var elementMatch = mElementMatcher.Match(dataLine ?? string.Empty);
 
                 if (string.IsNullOrEmpty(dataLine))
@@ -406,6 +416,12 @@ namespace CSharpDocCommentSortUtility
             return true;
         }
 
+        private string ReplaceFirst(string dataLine, string textToFind, string replacementText)
+        {
+            var matcher = new Regex(textToFind);
+            return matcher.Replace(dataLine, replacementText, 1);
+        }
+
         private bool SortDocumentationComments(FileInfo inputFile, out int sectionsUpdated, bool processingMultipleFiles = false)
         {
             sectionsUpdated = 0;
@@ -555,5 +571,18 @@ namespace CSharpDocCommentSortUtility
                 isClosingTag ? "/" : string.Empty));
         }
 
+        private void WarnInvalidFormat(RuntimeData runtimeData, string currentLine)
+        {
+            if (!runtimeData.InvalidFormatWarned)
+            {
+                OnWarningEvent("Invalid doc comment format in file " + PathUtils.CompactPathString(runtimeData.InputFilePath, 120));
+                runtimeData.InvalidFormatWarned = true;
+            }
+
+            OnWarningEvent(string.Format(
+                "Line {0} has '/// ///'; it should instead be: {1}{2}",
+                runtimeData.CurrentLineNumber, ReplaceFirst(currentLine, "/// ///", "///").Trim(),
+                Options.RenameInvalidElements ? " -- auto-updating" : " -- leaving as-is"));
+        }
     }
 }
