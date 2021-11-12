@@ -25,7 +25,8 @@ namespace CSharpDocCommentSortUtility
             var programName = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name;
             var exePath = PRISM.FileProcessor.ProcessFilesOrDirectoriesBase.GetAppPath();
             var exeName = Path.GetFileName(exePath);
-            var cmdLineParser = new CommandLineParser<SortUtilityOptions>(programName, SortUtilityOptions.GetAppVersion())
+
+            var parser = new CommandLineParser<SortUtilityOptions>(programName, SortUtilityOptions.GetAppVersion())
             {
                 ProgramInfo = ConsoleMsgUtils.WrapParagraph("This program sorts documentation comment blocks in C# source code files"),
                 ContactInfo = "Program written by Matthew Monroe for PNNL (Richland, WA)" + Environment.NewLine +
@@ -33,22 +34,28 @@ namespace CSharpDocCommentSortUtility
                                              "Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics"
             };
 
-            cmdLineParser.UsageExamples.Add(exeName + " CodeFile.cs");
-            cmdLineParser.UsageExamples.Add(exeName + " CodeFile.cs /write");
-            cmdLineParser.UsageExamples.Add(exeName + " *.cs /s");
-            cmdLineParser.UsageExamples.Add(exeName + " *.cs /s /quiet");
-            cmdLineParser.UsageExamples.Add(exeName + " *.cs /s /quiet /verbose:false");
-            cmdLineParser.UsageExamples.Add(exeName + @" /I:..\FileProcessor\*.cs /s /quiet /write");
+            parser.UsageExamples.Add(exeName + " CodeFile.cs");
+            parser.UsageExamples.Add(exeName + " CodeFile.cs /write");
+            parser.UsageExamples.Add(exeName + " *.cs /s");
+            parser.UsageExamples.Add(exeName + " *.cs /s /quiet");
+            parser.UsageExamples.Add(exeName + " *.cs /s /quiet /verbose:false");
+            parser.UsageExamples.Add(exeName + @" /I:..\FileProcessor\*.cs /s /quiet /write");
 
             // The default argument name for parameter files is /ParamFile or -ParamFile
             // Also allow /Conf or /P
-            cmdLineParser.AddParamFileKey("Conf");
-            cmdLineParser.AddParamFileKey("P");
+            parser.AddParamFileKey("Conf");
+            parser.AddParamFileKey("P");
 
-            var result = cmdLineParser.ParseArgs(args);
+            var result = parser.ParseArgs(args);
             var options = result.ParsedResults;
+
             if (!result.Success || !options.Validate())
             {
+                if (parser.CreateParamFileProvided)
+                {
+                    return 0;
+                }
+
                 // Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
                 System.Threading.Thread.Sleep(750);
                 return -1;
