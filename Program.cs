@@ -13,7 +13,7 @@ namespace CSharpDocCommentSortUtility
     /// Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)</para>
     /// <para>
     /// E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
-    /// Website: https://panomics.pnnl.gov/ or https://omics.pnl.gov
+    /// Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics
     /// </para>
     /// </remarks>
     internal static class Program
@@ -28,9 +28,9 @@ namespace CSharpDocCommentSortUtility
             var cmdLineParser = new CommandLineParser<SortUtilityOptions>(programName, SortUtilityOptions.GetAppVersion())
             {
                 ProgramInfo = ConsoleMsgUtils.WrapParagraph("This program sorts documentation comment blocks in C# source code files"),
-                ContactInfo = "Program written by Matthew Monroe for PNNL (Richland, WA) in 2021" + Environment.NewLine +
+                ContactInfo = "Program written by Matthew Monroe for PNNL (Richland, WA)" + Environment.NewLine +
                                              "E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov" + Environment.NewLine +
-                                             "Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/"
+                                             "Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics"
             };
 
             cmdLineParser.UsageExamples.Add(exeName + " CodeFile.cs");
