@@ -14,6 +14,8 @@ namespace CSharpDocCommentSortUtility
 
         private readonly Regex mCommentMatcher = new("^[ \t]*//[^/]", RegexOptions.Compiled);
 
+        private readonly Regex mCommentedScopeMatcher = new("^[ \t]*//[ \t]*(public|protected|private|internal)[ \t]", RegexOptions.Compiled);
+
         private readonly Regex mElementMatcher = new("^[ \t]*///[ \t]*<(?<ElementName>[^ />]+)", RegexOptions.Compiled);
 
         private readonly Regex mInvalidClosingElementMatcher = new("^[ \t]*///.+</(?<ElementName>remark|return)>", RegexOptions.Compiled);
@@ -248,6 +250,11 @@ namespace CSharpDocCommentSortUtility
                 else if (mCommentMatcher.IsMatch(dataLine))
                 {
                     currentSection.Add(dataLine);
+
+                    // Check for a commented out scope keyword
+                    // If found, that implies the current comment is on a commented out method, property, etc.
+                    if (mCommentedScopeMatcher.IsMatch(dataLine))
+                        break;
                 }
                 else if (elementMatch.Success)
                 {
