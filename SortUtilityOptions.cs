@@ -11,7 +11,7 @@ namespace CSharpDocCommentSortUtility
         /// <summary>
         /// Program date
         /// </summary>
-        public const string PROGRAM_DATE = "December 22, 2021";
+        public const string PROGRAM_DATE = "March 18, 2022";
 
         /// <summary>
         /// Input file path
@@ -88,9 +88,7 @@ namespace CSharpDocCommentSortUtility
         /// </summary>
         public static string GetAppVersion()
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version + " (" + PROGRAM_DATE + ")";
-
-            return version;
+            return Assembly.GetExecutingAssembly().GetName().Version + " (" + PROGRAM_DATE + ")";
         }
 
         /// <summary>
