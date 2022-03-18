@@ -190,14 +190,15 @@ namespace CSharpDocCommentSortUtility
 
             if (updatedFiles == 0)
             {
-                OnStatusEvent(string.Format("All {0} files are already up-to-date", fileCount));
+                OnStatusEvent("All {0} files are already up-to-date", fileCount);
             }
             else
             {
-                OnStatusEvent(string.Format("{0} {1} / {2} files",
+                OnStatusEvent(
+                    "{0} {1} / {2} files",
                     options.UpdateFiles ? "Updated" : "Would update",
                     updatedFiles,
-                    fileCount));
+                    fileCount);
             }
 
             return failureCount == 0;
@@ -324,7 +325,7 @@ namespace CSharpDocCommentSortUtility
                                 runtimeData.UnrecognizedElementWarned = true;
                             }
 
-                            OnWarningEvent(string.Format("Unrecognized element name on line {0}: {1}", runtimeData.CurrentLineNumber, elementName));
+                            OnWarningEvent("Unrecognized element name on line {0}: {1}", runtimeData.CurrentLineNumber, elementName);
 
                             currentSection.Add(dataLine);
                             break;
@@ -413,7 +414,7 @@ namespace CSharpDocCommentSortUtility
                 return true;
 
             OnStatusEvent(string.Empty);
-            OnStatusEvent(string.Format("Line {0}:", runtimeData.CommentBlockStartLineNumber));
+            OnStatusEvent("Line {0}:", runtimeData.CommentBlockStartLineNumber);
 
             foreach (var item in updatedComments)
             {
@@ -490,10 +491,11 @@ namespace CSharpDocCommentSortUtility
                 {
                     if (sectionsUpdated > 0 || !Options.QuietMode && Options.VerboseMode)
                     {
-                        OnStatusEvent(string.Format("  Would update {0} section{1} in file {2}",
+                        OnStatusEvent(
+                            "  Would update {0} section{1} in file {2}",
                             sectionsUpdated,
                             sectionsUpdated == 1 ? string.Empty : "s",
-                            PathUtils.CompactPathString(inputFile.FullName, 110)));
+                            PathUtils.CompactPathString(inputFile.FullName, 110));
                     }
 
                     return true;
@@ -539,7 +541,10 @@ namespace CSharpDocCommentSortUtility
 
                 outputFile.MoveTo(originalFilePath);
 
-                OnStatusEvent(string.Format("  Updated {0} sections in file {1}", sectionsUpdated, PathUtils.CompactPathString(originalFilePath, 110)));
+                OnStatusEvent(
+                    "  Updated {0} sections in file {1}",
+                    sectionsUpdated,
+                    PathUtils.CompactPathString(originalFilePath, 110));
 
                 return true;
             }
@@ -571,11 +576,11 @@ namespace CSharpDocCommentSortUtility
                 runtimeData.InvalidFormatWarned = true;
             }
 
-            OnWarningEvent(string.Format(
+            OnWarningEvent(
                 "Line {0} has <{4}{1}>; it should instead have <{4}{2}>{3}",
                 runtimeData.CurrentLineNumber, currentName, expectedName,
                 Options.RenameInvalidElements ? " -- auto-updating" : " -- leaving as-is",
-                isClosingTag ? "/" : string.Empty));
+                isClosingTag ? "/" : string.Empty);
         }
 
         private void WarnInvalidFormat(RuntimeData runtimeData, string currentLine)
@@ -586,10 +591,11 @@ namespace CSharpDocCommentSortUtility
                 runtimeData.InvalidFormatWarned = true;
             }
 
-            OnWarningEvent(string.Format(
+            OnWarningEvent(
                 "Line {0} has '/// ///'; it should instead be: {1}{2}",
-                runtimeData.CurrentLineNumber, ReplaceFirst(currentLine, "/// ///", "///").Trim(),
-                Options.RenameInvalidElements ? " -- auto-updating" : " -- leaving as-is"));
+                runtimeData.CurrentLineNumber,
+                ReplaceFirst(currentLine, "/// ///", "///").Trim(),
+                Options.RenameInvalidElements ? " -- auto-updating" : " -- leaving as-is");
         }
     }
 }
