@@ -37,17 +37,20 @@ namespace CSharpDocCommentSortUtility
 
         [Option("RemoveEmptyRemarks", "REM",
             HelpShowsDefault = false,
-            HelpText = "If true, remove empty remarks blocks, i.e. <remarks></remarks>")]
+            HelpText = "If true, remove empty remarks blocks, i.e. <remarks></remarks>\n" +
+                       "Auto-enabled if /RemoveEmpty is true")]
         public bool RemoveEmptyRemarks { get; set; }
 
         [Option("RemoveEmptyReturns", "RET",
             HelpShowsDefault = false,
-            HelpText = "If true, remove empty returns blocks, i.e. <returns></returns>")]
+            HelpText = "If true, remove empty returns blocks, i.e. <returns></returns>\n" +
+                       "Auto-enabled if /RemoveEmpty is true")]
         public bool RemoveEmptyReturns { get; set; }
 
         [Option("RemoveEmptyValueTags", "REV",
             HelpShowsDefault = false,
-            HelpText = "If true, remove empty value blocks, i.e. <value></value>")]
+            HelpText = "If true, remove empty value blocks, i.e. <value></value>\n" +
+                       "Auto-enabled if /RemoveEmpty is true")]
         public bool RemoveEmptyValueTags { get; set; }
 
         [Option("RenameInvalidElements", "FixInvalid", "RenameInvalid",
