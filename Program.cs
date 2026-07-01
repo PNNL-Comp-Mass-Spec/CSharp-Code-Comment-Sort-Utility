@@ -13,7 +13,7 @@ namespace CSharpDocCommentSortUtility
     /// Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)</para>
     /// <para>
     /// E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
-    /// Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics
+    /// Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://www.pnnl.gov/integrative-omics
     /// </para>
     /// </remarks>
     internal static class Program
@@ -31,7 +31,7 @@ namespace CSharpDocCommentSortUtility
                 ProgramInfo = ConsoleMsgUtils.WrapParagraph("This program sorts documentation comment blocks in C# source code files"),
                 ContactInfo = "Program written by Matthew Monroe for PNNL (Richland, WA)" + Environment.NewLine +
                                              "E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov" + Environment.NewLine +
-                                             "Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics"
+                                             "Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://www.pnnl.gov/integrative-omics"
             };
 
             parser.UsageExamples.Add(exeName + " CodeFile.cs");
@@ -56,7 +56,7 @@ namespace CSharpDocCommentSortUtility
                     return 0;
                 }
 
-                // Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
+                // Delay for 750 msec in case the user double-clicked this file from within Windows Explorer (or started the program via a shortcut)
                 System.Threading.Thread.Sleep(750);
                 return -1;
             }
