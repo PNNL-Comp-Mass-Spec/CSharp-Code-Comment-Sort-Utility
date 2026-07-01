@@ -6,7 +6,7 @@ namespace CSharpDocCommentSortUtility
 {
     internal class SortUtilityOptions
     {
-        // Ignore Spelling: wildcards
+        // Ignore Spelling: recurse, wildcards
 
         /// <summary>
         /// Program date

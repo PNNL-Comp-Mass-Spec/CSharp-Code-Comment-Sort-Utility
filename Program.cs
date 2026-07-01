@@ -18,12 +18,12 @@ namespace CSharpDocCommentSortUtility
     /// </remarks>
     internal static class Program
     {
-        // Ignore Spelling: Conf
+        // Ignore Spelling: Conf, Richland
 
         internal static int Main(string[] args)
         {
             var programName = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name;
-            var exePath = PRISM.FileProcessor.ProcessFilesOrDirectoriesBase.GetAppPath();
+            var exePath = PRISM.AppUtils.GetAppPath();
             var exeName = Path.GetFileName(exePath);
 
             var parser = new CommandLineParser<SortUtilityOptions>(programName, SortUtilityOptions.GetAppVersion())
