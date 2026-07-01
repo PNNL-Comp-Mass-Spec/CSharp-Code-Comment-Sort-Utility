@@ -11,7 +11,7 @@ namespace CSharpDocCommentSortUtility
         /// <summary>
         /// Program date
         /// </summary>
-        public const string PROGRAM_DATE = "March 18, 2022";
+        public const string PROGRAM_DATE = "June 30, 2026";
 
         /// <summary>
         /// Input file path
